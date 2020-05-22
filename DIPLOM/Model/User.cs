@@ -12,5 +12,16 @@ namespace DIPLOM.Model
         public string Login { get; set; }
         public string PassHash { get; set; }
         public Role Role { get; set; }
+
+        public User(string login, string passHash, Role role)
+        {
+            Login = login;
+            PassHash = passHash;
+            Role = role;
+        }
+
+        public User()
+        {
+        }
     }
 }

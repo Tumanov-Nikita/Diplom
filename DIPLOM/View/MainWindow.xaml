@@ -1,0 +1,42 @@
+﻿<Window x:Class="DIPLOM.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DIPLOM.View"
+        xmlns:col="clr-namespace:System.Collections;assembly=mscorlib"
+        xmlns:local1="clr-namespace:DIPLOM.Model"
+        mc:Ignorable="d"
+        Title="Главное окно" Height="316" Width="751">
+
+    <Grid>
+
+        <DockPanel RenderTransformOrigin="0.499,0.655">
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="Справочники">
+                    <MenuItem Header="Авто-комплектующие" />
+                    <MenuItem Header="Комплектации"/>
+                    <MenuItem Header="Группы запчастей" />
+                </MenuItem>
+            </Menu>
+        </DockPanel>
+        <DataGrid x:Name="dataGridParts" HorizontalAlignment="Left" Height="199" VerticalAlignment="Top" Width="182" IsReadOnly="True" Margin="551,67,0,0"/>
+        <TextBox x:Name="textBox" Height="23" TextWrapping="Wrap" Text="" Margin="341,128,259,0" VerticalAlignment="Top"/>
+        <Label x:Name="label" Content="Введите ценовой параметр:" Margin="325,99,227,0" RenderTransformOrigin="0.596,0.517" Height="29" VerticalAlignment="Top"/>
+        <Label x:Name="label_Copy" Content="Выберите необходимые компоненты:" Margin="10,38,504,0" RenderTransformOrigin="0.596,0.517" Height="29" VerticalAlignment="Top"/>
+        <DataGrid x:Name="dataGrid" Margin="10,67,461,0" Height="199" VerticalAlignment="Top" ItemsSource="{DynamicResource ResourceKey=parts}" IsReadOnly="True">
+            <GridViewColumn DisplayMemberBinding="{Binding Path=Name}">Название</GridViewColumn>
+            <GridViewColumn DisplayMemberBinding="{Binding Path=Selected}">Выбрано</GridViewColumn>
+        </DataGrid>
+            <Label x:Name="label_Copy1" Content="Результат отбора:" Margin="560,38,27,0" RenderTransformOrigin="0.445,0.586" Height="29" VerticalAlignment="Top"/>
+        <Button x:Name="button" Content="Отобрать компоненты" Margin="341,221,259,0" Height="45" VerticalAlignment="Top"/>
+
+    </Grid>
+    <Window.Resources>
+        <col:ArrayList x:Key="parts">
+            <local1:Group Name="Поршни" Selected="false"/>
+            <local1:Group Name="Стекло лобовое" Selected="True"/>
+            <local1:Group Name="Амортизаторы" Selected="false"/>
+        </col:ArrayList>
+    </Window.Resources>
+</Window>

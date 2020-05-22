@@ -1,0 +1,9 @@
+﻿<Window x:Class="DIPLOM.View.ProgressBarWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Происходит загрузка данных" Height="100" Width="411.017" ContentRendered="Window_ContentRendered">
+    <Grid Margin="20">
+        <ProgressBar Minimum="0" Maximum="100" Value="0" Name="pbStatus"/>
+    </Grid>
+
+</Window>

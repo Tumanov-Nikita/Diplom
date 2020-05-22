@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28307.852
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DIPLOM", "DIPLOM\DIPLOM.csproj", "{EB09D5FC-81DF-46A5-A71B-E8D9D8F60E2F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DIPLOM.Test", "DIPLOM.Test\DIPLOM.Test.csproj", "{64FE1F6D-9CA7-4B7C-81E5-66FEC85D33A3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{EB09D5FC-81DF-46A5-A71B-E8D9D8F60E2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB09D5FC-81DF-46A5-A71B-E8D9D8F60E2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB09D5FC-81DF-46A5-A71B-E8D9D8F60E2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64FE1F6D-9CA7-4B7C-81E5-66FEC85D33A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64FE1F6D-9CA7-4B7C-81E5-66FEC85D33A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64FE1F6D-9CA7-4B7C-81E5-66FEC85D33A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64FE1F6D-9CA7-4B7C-81E5-66FEC85D33A3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
