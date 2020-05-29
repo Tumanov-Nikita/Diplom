@@ -42,6 +42,7 @@ namespace DIPLOM.Infrastructure
 
             ProgressBarWindow progressBarWindow = new ProgressBarWindow(DB, FileName);
             progressBarWindow.ShowDialog();
+            progressBarWindow.Close();
         }
        
     }

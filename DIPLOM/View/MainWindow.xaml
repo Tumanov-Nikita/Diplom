@@ -7,36 +7,49 @@
         xmlns:col="clr-namespace:System.Collections;assembly=mscorlib"
         xmlns:local1="clr-namespace:DIPLOM.Model"
         mc:Ignorable="d"
-        Title="Главное окно" Height="316" Width="751">
-
+        xmlns:vm="clr-namespace:DIPLOM.View"
+        Title="Главное окно" Height="333" Width="766" ContentRendered="Window_ContentRendered">
+    <Window.DataContext>
+        <vm:AutorizationWindow/>
+    </Window.DataContext>
     <Grid>
-
         <DockPanel RenderTransformOrigin="0.499,0.655">
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="Справочники">
-                    <MenuItem Header="Авто-комплектующие" />
+                    <MenuItem Header="Авто-комплектующие" Click="MenuItemAutoParts_Click"/>
                     <MenuItem Header="Комплектации"/>
                     <MenuItem Header="Группы запчастей" />
                 </MenuItem>
             </Menu>
         </DockPanel>
-        <DataGrid x:Name="dataGridParts" HorizontalAlignment="Left" Height="199" VerticalAlignment="Top" Width="182" IsReadOnly="True" Margin="551,67,0,0"/>
-        <TextBox x:Name="textBox" Height="23" TextWrapping="Wrap" Text="" Margin="341,128,259,0" VerticalAlignment="Top"/>
-        <Label x:Name="label" Content="Введите ценовой параметр:" Margin="325,99,227,0" RenderTransformOrigin="0.596,0.517" Height="29" VerticalAlignment="Top"/>
-        <Label x:Name="label_Copy" Content="Выберите необходимые компоненты:" Margin="10,38,504,0" RenderTransformOrigin="0.596,0.517" Height="29" VerticalAlignment="Top"/>
-        <DataGrid x:Name="dataGrid" Margin="10,67,461,0" Height="199" VerticalAlignment="Top" ItemsSource="{DynamicResource ResourceKey=parts}" IsReadOnly="True">
-            <GridViewColumn DisplayMemberBinding="{Binding Path=Name}">Название</GridViewColumn>
-            <GridViewColumn DisplayMemberBinding="{Binding Path=Selected}">Выбрано</GridViewColumn>
-        </DataGrid>
-            <Label x:Name="label_Copy1" Content="Результат отбора:" Margin="560,38,27,0" RenderTransformOrigin="0.445,0.586" Height="29" VerticalAlignment="Top"/>
-        <Button x:Name="button" Content="Отобрать компоненты" Margin="341,221,259,0" Height="45" VerticalAlignment="Top"/>
-
+        <DataGrid x:Name="dataGridParts" HorizontalAlignment="Left" Height="199" VerticalAlignment="Top" Width="264" IsReadOnly="True" Margin="469,67,0,0"/>
+        <TextBox x:Name="textBoxPrice" Height="23" TextWrapping="Wrap" Text="" Margin="279,78,321,0" VerticalAlignment="Top"/>
+        <Label x:Name="label" Content="Введите ценовой параметр:" Margin="263,49,289,0" RenderTransformOrigin="0.596,0.517" Height="29" VerticalAlignment="Top"/>
+        <Label x:Name="label_Copy" Content="Выберите необходимую совместимость:" Margin="10,38,488,0" RenderTransformOrigin="0.596,0.517" Height="29" VerticalAlignment="Top"/>
+        <ComboBox Name="ComboBoxCompatibility" DisplayMemberPath="Name" Margin="27,78,518,199" MinHeight="25" Padding="6,1,5,0"/>
+        <!--<DataGrid x:Name="dataGridNeededParts" Margin="10,67,461,0" Height="199" VerticalAlignment="Top" IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Группа" Binding="{Binding Group}" MinWidth="40" />
+                <DataGridComboBoxColumn Header="Компонент"  Width="*" DisplayMemberPath="Name" ItemsSource="{Binding CompanyItems}"
+                                    SelectedValuePath="Id"
+                                    SelectedValueBinding="{Binding CompanyID}">
+                    
+                </DataGridComboBoxColumn>
+                -->
+        <!--<DataGridTemplateColumn.CellTemplate> 
+                    <DataTemplate>
+                        <ComboBox ItemsSource="{Binding CollectionForComboBox}" />
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>-->
+        <!--
+            </DataGrid.Columns>
+        </DataGrid>-->
+        <Label x:Name="label_Copy1" Content="Результат отбора:" Margin="474,38,113,0" RenderTransformOrigin="0.445,0.586" Height="29" VerticalAlignment="Top"/>
+        <Button x:Name="buttonStart" Content="Отобрать компоненты" Margin="279,237,321,0" Height="29" VerticalAlignment="Top" Click="ButtonStart_Click"/>
+        <TextBox x:Name="textBoxWeight" Height="23" TextWrapping="Wrap" Text="" Margin="279,135,321,0" VerticalAlignment="Top"/>
+        <Label x:Name="label_Copy2" Content="Введите параметр массы:" Margin="263,106,289,0" RenderTransformOrigin="0.596,0.517" Height="29" VerticalAlignment="Top"/>
+        <TextBox x:Name="textBoxCapacity" Height="23" TextWrapping="Wrap" Text="" Margin="279,192,321,0" VerticalAlignment="Top"/>
+        <Label x:Name="label_Copy3" Content="Введите параметр объема:" Margin="263,163,289,0" RenderTransformOrigin="0.596,0.517" Height="29" VerticalAlignment="Top"/>
     </Grid>
-    <Window.Resources>
-        <col:ArrayList x:Key="parts">
-            <local1:Group Name="Поршни" Selected="false"/>
-            <local1:Group Name="Стекло лобовое" Selected="True"/>
-            <local1:Group Name="Амортизаторы" Selected="false"/>
-        </col:ArrayList>
-    </Window.Resources>
 </Window>

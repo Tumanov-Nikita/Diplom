@@ -10,7 +10,6 @@
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
-            ContextKey = "DIPLOM.Model.DB_Context";
         }
 
         protected override void Seed(DIPLOM.Model.DB_Context context)

@@ -76,19 +76,27 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Infrastructure\CompatibilityComparer.cs" />
+    <Compile Include="Infrastructure\GeneticAlgorithm.cs" />
+    <Compile Include="Controller\GroupController.cs" />
     <Compile Include="Controller\UserController.cs" />
     <Compile Include="Infrastructure\Encrypting.cs" />
-    <Compile Include="Migrations\202005192129017_InitialCreate.cs" />
-    <Compile Include="Migrations\202005192129017_InitialCreate.designer.cs">
-      <DependentUpon>202005192129017_InitialCreate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202005211332554_first migration.cs" />
-    <Compile Include="Migrations\202005211332554_first migration.designer.cs">
-      <DependentUpon>202005211332554_first migration.cs</DependentUpon>
+    <Compile Include="Migrations\202005241431220_Add compatibilities.cs" />
+    <Compile Include="Migrations\202005241431220_Add compatibilities.designer.cs">
+      <DependentUpon>202005241431220_Add compatibilities.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Model\Compatibility.cs" />
+    <Compile Include="Model\Individual.cs" />
+    <Compile Include="Model\Population.cs" />
     <Compile Include="View\AdminWindow.xaml.cs">
       <DependentUpon>AdminWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\AutopartWindow.xaml.cs">
+      <DependentUpon>AutopartWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\GeneticAlgorithmProgress.xaml.cs">
+      <DependentUpon>GeneticAlgorithmProgress.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -100,6 +108,10 @@
       <DependentUpon>RegistrationWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="View\AdminWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\AutopartWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -119,6 +131,10 @@
       <DependentUpon>AutorizationWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="View\GeneticAlgorithmProgress.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\MainWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -159,11 +175,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <EmbeddedResource Include="Migrations\202005192129017_InitialCreate.resx">
-      <DependentUpon>202005192129017_InitialCreate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202005211332554_first migration.resx">
-      <DependentUpon>202005211332554_first migration.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202005241431220_Add compatibilities.resx">
+      <DependentUpon>202005241431220_Add compatibilities.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

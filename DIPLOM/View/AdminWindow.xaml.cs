@@ -1,21 +1,10 @@
 ﻿using DIPLOM.Infrastructure;
 using DIPLOM.Model;
-using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace DIPLOM.View
 {
@@ -48,10 +37,11 @@ namespace DIPLOM.View
             {
                 case MessageBoxResult.Yes:
                     Parsing parsing = new Parsing(DB);
-                    Thread ParseThread = new Thread(new ThreadStart(parsing.Parse));
-                    ParseThread.Priority = ThreadPriority.Highest;
-                    ParseThread.SetApartmentState(ApartmentState.STA);
-                    ParseThread.Start();
+                    parsing.Parse();
+                    //Thread ParseThread = new Thread(new ThreadStart(parsing.Parse));
+                    //ParseThread.Priority = ThreadPriority.Highest;
+                    //ParseThread.SetApartmentState(ApartmentState.STA);
+                    //ParseThread.Start();
                     break;
                 case MessageBoxResult.No:
                     break;
@@ -59,13 +49,13 @@ namespace DIPLOM.View
                     break;
             }
 
-            foreach (Process clsProcess in Process.GetProcesses())
-            {
-                if (clsProcess.MainWindowTitle == "Microsoft Excel")
-                {
-                    clsProcess.Kill();
-                }
-            }
+            //foreach (Process clsProcess in Process.GetProcesses())
+            //{
+            //    if (clsProcess.MainWindowTitle == "Microsoft Excel")
+            //    {
+            //        clsProcess.Kill();
+            //    }
+            //}
         }
 
         private void ButtonDownloadDB_Click(object sender, RoutedEventArgs e)
@@ -76,6 +66,12 @@ namespace DIPLOM.View
         private void Button_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void MenuItemAutoParts_Click(object sender, RoutedEventArgs e)
+        {
+            AutopartWindow autopartWindow = new AutopartWindow(DB);
+            autopartWindow.Show();
         }
     }
 }

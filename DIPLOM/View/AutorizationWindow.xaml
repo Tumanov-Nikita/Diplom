@@ -11,7 +11,7 @@
         <Label x:Name="label" Content="Введите логин" HorizontalAlignment="Left" Margin="26,60,0,0" VerticalAlignment="Top" Width="90"/>
         <PasswordBox x:Name="txtPassword" PasswordChar="*" HorizontalAlignment="Left" Margin="153,104,0,0" VerticalAlignment="Top" Width="179" Height="23" MaxLength="30"/>
         <Label x:Name="label_Copy" Content="Введите пароль" HorizontalAlignment="Left" Margin="26,101,0,0" VerticalAlignment="Top" Width="104"/>
-        <Button x:Name="buttonAutorization" Content="Войти" HorizontalAlignment="Left" Height="27" Margin="23,170,0,0" VerticalAlignment="Top" Width="133" Click="ButtonAutorization_Click"/>
+        <Button x:Name="buttonAutorization" Content="Войти" HorizontalAlignment="Left" Height="27" Margin="23,170,0,0" VerticalAlignment="Top" Width="133" Click="ButtonAutorization_Click" IsDefault = "true"/>
         <Button x:Name="buttonRegistration" Content="Зарегистрироваться" HorizontalAlignment="Left" Height="27" Margin="196,170,0,0" VerticalAlignment="Top" Width="133" Click="ButtonRegistration_Click"/>
     </Grid>
 </Window>

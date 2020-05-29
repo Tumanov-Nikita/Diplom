@@ -127,6 +127,9 @@ C:\Users\user\Desktop\UCHYOBA NOUT\4 курс\ДИПЛОМ\DIPLOM\DIPLOM\obj\Deb
 C:\Users\user\Desktop\UCHYOBA NOUT\4 курс\ДИПЛОМ\DIPLOM\DIPLOM\obj\Debug\View\MainWindow.g.cs
 C:\Users\user\Desktop\UCHYOBA NOUT\4 курс\ДИПЛОМ\DIPLOM\DIPLOM\obj\Debug\View\MainWindow.baml
 C:\Users\user\Desktop\UCHYOBA NOUT\4 курс\ДИПЛОМ\DIPLOM\DIPLOM\obj\Debug\DIPLOM.csprojAssemblyReference.cache
-C:\Users\user\Desktop\UCHYOBA NOUT\4 курс\ДИПЛОМ\DIPLOM\DIPLOM\obj\Debug\DIPLOM.Migrations.InitialCreate.resources
 C:\Users\user\Desktop\UCHYOBA NOUT\4 курс\ДИПЛОМ\DIPLOM\DIPLOM\obj\Debug\GeneratedInternalTypeHelper.g.cs
-C:\Users\user\Desktop\UCHYOBA NOUT\4 курс\ДИПЛОМ\DIPLOM\DIPLOM\obj\Debug\DIPLOM.Migrations.firstmigration.resources
+C:\Users\user\Desktop\UCHYOBA NOUT\4 курс\ДИПЛОМ\DIPLOM\DIPLOM\obj\Debug\View\AutopartWindow.g.cs
+C:\Users\user\Desktop\UCHYOBA NOUT\4 курс\ДИПЛОМ\DIPLOM\DIPLOM\obj\Debug\View\AutopartWindow.baml
+C:\Users\user\Desktop\UCHYOBA NOUT\4 курс\ДИПЛОМ\DIPLOM\DIPLOM\obj\Debug\DIPLOM.Migrations.Addcompatibilities.resources
+C:\Users\user\Desktop\UCHYOBA NOUT\4 курс\ДИПЛОМ\DIPLOM\DIPLOM\obj\Debug\View\GeneticAlgorithmProgress.baml
+C:\Users\user\Desktop\UCHYOBA NOUT\4 курс\ДИПЛОМ\DIPLOM\DIPLOM\obj\Debug\View\GeneticAlgorithmProgress.g.cs

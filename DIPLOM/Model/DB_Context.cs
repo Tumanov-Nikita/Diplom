@@ -21,5 +21,9 @@ namespace DIPLOM.Model
             public DbSet<SelectedAutoPart> SelectedAutoParts { get; set; }
 
             public DbSet<User> Users { get; set; }
+
+            public DbSet<Group> Groups { get; set; }
+
+            public DbSet<Compatibility> Compatibilities { get; set; }
     }
 }

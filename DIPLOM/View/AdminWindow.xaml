@@ -11,7 +11,7 @@
 
         <Menu DockPanel.Dock="Top" Margin="0,-5,0,5">
             <MenuItem Header="Справочники">
-                <MenuItem Header="Авто-комплектующие" />
+                <MenuItem Header="Авто-комплектующие" Click="MenuItemAutoParts_Click"/>
                 <MenuItem Header="Комплектации"/>
                 <MenuItem Header="Группы запчастей" />
             </MenuItem>
