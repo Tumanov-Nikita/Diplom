@@ -1,9 +1,11 @@
 ﻿using DIPLOM.Model;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DIPLOM.Infrastructure
@@ -12,6 +14,8 @@ namespace DIPLOM.Infrastructure
     {
         private DB_Context DB;
         List<AutoPart> SelectedAutoParts;
+        List<Group> SelectedGroups;
+        public List<int> BestCombination;
         private Random rnd = new Random();
         private string SelectedCompatibilityName;
         private int FitnessFunctionLimit;
@@ -22,10 +26,15 @@ namespace DIPLOM.Infrastructure
 
         
 
-        public GeneticAlgorithm(DB_Context db, int fitnessFunctionLimit)
+        public GeneticAlgorithm(DB_Context db, int fitnessFunctionLimit, double priceP, double weightP, double capacityP, string selectedCompatibility, List<Group> selectedGroups)
         {
             DB = db;
+            PriceP = priceP;
+            WeightP = weightP;
+            CapacityP = capacityP;
+            SelectedCompatibilityName = selectedCompatibility;
             FitnessFunctionLimit = fitnessFunctionLimit;
+            SelectedGroups = selectedGroups;
         }
 
 
@@ -70,17 +79,26 @@ namespace DIPLOM.Infrastructure
         }
 
 
-        public List<int> FindOptimalCombination(double priceP, double weightP, double capacityP, string selectedCompatibility)
+        public void FindOptimalCombination(BackgroundWorker worker)
         {
-            PriceP = priceP;
-            WeightP = weightP;
-            CapacityP = capacityP;
-            SelectedCompatibilityName = selectedCompatibility;
-            SelectedAutoParts = DB.AutoParts.SqlQuery("SELECT * FROM dbo.AutoParts WHERE Id IN (SELECT AutoPart_Id FROM dbo.Compatibilities WHERE  Name = @name)", new SqlParameter("@name", SelectedCompatibilityName)).ToList();
-            //SelectedAutoParts = DB.AutoParts.Where(p => p.Compatibilities.ForEach(()=> )).ToList();
-            //SelectedAutoParts = DB.AutoParts.Where(p => p.Compatibilities.ToList();
-            //SelectedAutoParts = DB.AutoParts.Where(p => p.ContainsCompatibilityName(selectedCompatibility)).ToList();
+            Compatibility selectCompatibility = (Compatibility)DB.Compatibilities.Where(c => c.Name == SelectedCompatibilityName).FirstOrDefault();
+            List<string> GroupsNames = new List<string>();
+            foreach (Group gr in SelectedGroups)
+            {
+                GroupsNames.Add(gr.Name);
+            }
 
+            SelectedAutoParts = DB.AutoParts.Where(a => GroupsNames.Contains(a.GroupName)).ToList();
+            foreach (AutoPart part in SelectedAutoParts)
+            {
+                if (part.Compatibilities.Count == 0 && part.CompatibilitiesNames.Count == 0)
+                {
+                    Compatibility Common = DB.Compatibilities.Where(c => c.Name == "ОБЩЕЕ").FirstOrDefault();
+                    part.Compatibilities.Add(Common);
+                    part.CompatibilitiesNames.Add("ОБЩЕЕ");
+                }
+            }
+            SelectedAutoParts = SelectedAutoParts.Where(s=>s.CompatibilitiesNames.Contains(selectCompatibility.Name)).ToList();
 
             Population currentPopulation = new Population();
             for (int i = 0; i < PopulationCapacity; i++)
@@ -96,17 +114,19 @@ namespace DIPLOM.Infrastructure
 
             int populationCount = 0;
 
-
-
             while (populationCount < 100)
             {
-                long recordStart = DateTime.Now.Ticks;
+                if (worker.CancellationPending)
+                {
+                    return;
+                }
 
                 GetFitFunctionAll(currentPopulation);
                 Individual bestOfPopulation = BestIndividual(currentPopulation);
                 if (bestOfPopulation != null)
                 {
-                    return bestOfPopulation.Chromosome;
+                    BestCombination = bestOfPopulation.Chromosome;
+                    //return bestOfPopulation.Chromosome;
                 }
 
                 Population newPopulation = new Population();
@@ -120,14 +140,13 @@ namespace DIPLOM.Infrastructure
 
                 currentPopulation = newPopulation;
 
-                Console.WriteLine(populationCount + ": " + (DateTime.Now.Ticks - recordStart));
+                Console.WriteLine(populationCount);
 
                 populationCount++;
             }
 
 
-
-            return null;
+            //return null;
         }
 
 

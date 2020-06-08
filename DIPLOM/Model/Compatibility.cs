@@ -10,6 +10,7 @@ namespace DIPLOM.Model
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        //public List<AutoPart> AutoParts { get; set; }
 
         public Compatibility(string name)
         {
@@ -19,5 +20,13 @@ namespace DIPLOM.Model
         public Compatibility()
         {
         }
+
+        //public void AddAutoPart(AutoPart autoPart)
+        //{
+        //    if (!AutoParts.Contains(autoPart))
+        //    {
+        //        AutoParts.Add(autoPart);
+        //    }
+        //}
     }
 }

@@ -114,6 +114,8 @@ namespace DIPLOM.View
             var arrData = (object[,])ObjRange.Value;
             int length = arrData.GetLength(0);
 
+            DB.Compatibilities.Add(new Compatibility("ОБЩЕЕ"));
+
             for (int i = 1; i < length; i++)
             {
                 if (!worker.CancellationPending)

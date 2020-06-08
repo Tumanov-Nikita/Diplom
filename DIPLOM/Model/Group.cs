@@ -18,6 +18,8 @@ namespace DIPLOM.Model
         {
         }
 
+        public override string ToString() { return Name; }
+
         public void AddSubGroup(string SubGroup)
         {
             if (!SubGroups.Contains(SubGroup))

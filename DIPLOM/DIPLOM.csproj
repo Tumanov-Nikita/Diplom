@@ -85,8 +85,18 @@
     <Compile Include="Migrations\202005241431220_Add compatibilities.designer.cs">
       <DependentUpon>202005241431220_Add compatibilities.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202006071716171_second.cs" />
+    <Compile Include="Migrations\202006071716171_second.designer.cs">
+      <DependentUpon>202006071716171_second.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006071929388_return.cs" />
+    <Compile Include="Migrations\202006071929388_return.designer.cs">
+      <DependentUpon>202006071929388_return.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Model\AutopartView.cs" />
     <Compile Include="Model\Compatibility.cs" />
+    <Compile Include="Model\GroupView.cs" />
     <Compile Include="Model\Individual.cs" />
     <Compile Include="Model\Population.cs" />
     <Compile Include="View\AdminWindow.xaml.cs">
@@ -177,6 +187,12 @@
     </Compile>
     <EmbeddedResource Include="Migrations\202005241431220_Add compatibilities.resx">
       <DependentUpon>202005241431220_Add compatibilities.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006071716171_second.resx">
+      <DependentUpon>202006071716171_second.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006071929388_return.resx">
+      <DependentUpon>202006071929388_return.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

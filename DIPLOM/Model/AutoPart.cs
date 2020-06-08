@@ -15,6 +15,7 @@ namespace DIPLOM.Model
         public string GroupName { get; set; }
         public string SubGroupName { get; set; }
         public List<Compatibility> Compatibilities { get; set; }
+        public List<string> CompatibilitiesNames { get; set; }
         public double Price { get; set; }
         public string Proportions { get; set; }
         public double Weight { get; set; }
@@ -33,17 +34,21 @@ namespace DIPLOM.Model
             Amount = amount;
             Weight = weight;
             Compatibilities = new List<Compatibility>();
+            CompatibilitiesNames = new List<string>();
         }
 
         public AutoPart()
         {
+            Compatibilities = new List<Compatibility>();
+            CompatibilitiesNames = new List<string>();
         }
 
         public void AddCompatibility(Compatibility ownerShip)
         {
-            if (!Compatibilities.Contains(ownerShip))
+            if (!Compatibilities.Contains(ownerShip) && ownerShip != null)
             {
                 Compatibilities.Add(ownerShip);
+                CompatibilitiesNames.Add(ownerShip.Name);
             }
         }
 
@@ -58,5 +63,11 @@ namespace DIPLOM.Model
             }
             return false;
         }
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
     }
 }

@@ -1,5 +1,7 @@
-﻿using System;
+﻿using DIPLOM.Model;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -87,6 +89,17 @@ namespace DIPLOM.Infrastructure
         {
             if (price == "" && weight == "" && capacity == "" && price == "0" && weight == "0" && capacity == "0")
             {
+                return false;
+            }
+            return true;
+        }
+
+        public static bool CheckSelectedGroups(ObservableCollection<GroupView> groupList)
+        {
+            var check = groupList.Where(g => g._isChecked).FirstOrDefault();
+            if (check == null)
+            {
+                MessageBox.Show("Выберите хотя бы одну обязательную группу", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
             return true;

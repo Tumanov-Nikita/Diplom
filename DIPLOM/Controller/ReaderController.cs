@@ -29,7 +29,7 @@ namespace DIPLOM.Controller
         {
             try
             {
-                List<Compatibility> compatibilities = new List<Compatibility>();
+                List<Compatibility> compatibilities = new List<Compatibility>();    
                 if (name.Contains("(ДЛЯ"))
                 {
                     List<string> compatibilityNames = Ownership(name);
@@ -39,15 +39,8 @@ namespace DIPLOM.Controller
                             {
                                 return;
                             }
-                            //var existing = DB.Compatibilities.Where(c => c.Name == str);
-                            //if (!existing.Any())
-                            //{
-                                compatibilities.Add(new Compatibility(str));
-                            //}
-                            //else
-                            //{
-                            //   compatibilities.Add(DB.Compatibilities.Where(c => c.Name == str).FirstOrDefault());
-                            //}
+                             compatibilities.Add(new Compatibility(str));
+
                         }
                     }
                 }
