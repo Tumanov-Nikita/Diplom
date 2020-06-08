@@ -18,7 +18,7 @@ namespace DIPLOM.Infrastructure
         public List<int> BestCombination;
         private Random rnd = new Random();
         private string SelectedCompatibilityName;
-        private int FitnessFunctionLimit;
+        private double FitnessFunctionLimit;
         private double PriceP;
         private double WeightP;
         private double CapacityP;
@@ -26,7 +26,7 @@ namespace DIPLOM.Infrastructure
 
         
 
-        public GeneticAlgorithm(DB_Context db, int fitnessFunctionLimit, double priceP, double weightP, double capacityP, string selectedCompatibility, List<Group> selectedGroups)
+        public GeneticAlgorithm(DB_Context db, double fitnessFunctionLimit, double priceP, double weightP, double capacityP, string selectedCompatibility, List<Group> selectedGroups)
         {
             DB = db;
             PriceP = priceP;
@@ -62,48 +62,65 @@ namespace DIPLOM.Infrastructure
         private double GetFitFunctionOfOne(Individual individual)
         {
             double function = 0;
+            double sumP = 0;
+            double sumW = 0;
+            double sumC = 0;
             AutoPart part = new AutoPart();
             foreach (int gene in individual.Chromosome)
             {
-                double sumOfDeparture = 0;
-
                 part = DB.AutoParts.Where(p => p.Id.Equals(gene)).FirstOrDefault();
-                double priceDeparture = PriceP == 0 ? 0 : Math.Abs((PriceP) - part.Price);
-                double weightDeparture = WeightP == 0 ? 0 : Math.Abs((WeightP) - part.Weight);
-                double capacityDeparture = CapacityP == 0 ? 0 : Math.Abs((CapacityP) - Checkers.CapacityCalc(part.Proportions));
-
-                sumOfDeparture = Math.Pow(priceDeparture + weightDeparture + capacityDeparture, 2);
-                function += Math.Sqrt(sumOfDeparture/Math.Sign(PriceP) + Math.Sign(WeightP) + Math.Sign(CapacityP));
+                sumP += part.Price;
+                sumW += part.Weight;
+                sumC += Checkers.CapacityCalc(part.Proportions);
             }
+
+            double sumOfDeparture = 0;
+
+            double priceDeparture = PriceP == 0 ? 0 : Math.Abs((PriceP) - sumP);
+            double weightDeparture = WeightP == 0 ? 0 : Math.Abs((WeightP) - sumW);
+            double capacityDeparture = CapacityP == 0 ? 0 : Math.Abs((CapacityP) - sumC);
+
+            sumOfDeparture = Math.Pow(priceDeparture + weightDeparture + capacityDeparture, 2);
+            function += Math.Sqrt(sumOfDeparture / Math.Sign(PriceP) + Math.Sign(WeightP) + Math.Sign(CapacityP));
+
             return function;
         }
 
 
         public void FindOptimalCombination(BackgroundWorker worker)
         {
-            Compatibility selectCompatibility = (Compatibility)DB.Compatibilities.Where(c => c.Name == SelectedCompatibilityName).FirstOrDefault();
+            //Compatibility selectCompatibility = (Compatibility)DB.Compatibilities.Where(c => c.Name == SelectedCompatibilityName).FirstOrDefault();
             List<string> GroupsNames = new List<string>();
             foreach (Group gr in SelectedGroups)
             {
                 GroupsNames.Add(gr.Name);
             }
 
-            SelectedAutoParts = DB.AutoParts.Where(a => GroupsNames.Contains(a.GroupName)).ToList();
-            foreach (AutoPart part in SelectedAutoParts)
+
+            List<AutoPart> TempList = DB.AutoParts.Where(a => GroupsNames.Contains(a.GroupName)).ToList();
+
+            //SelectedAutoParts = TempList.Where(s => s.CompatibilitiesNames.Contains(SelectedCompatibilityName)).ToList();
+            SelectedAutoParts = new List<AutoPart>();
+
+            foreach (AutoPart autoPart in TempList)
             {
-                if (part.Compatibilities.Count == 0 && part.CompatibilitiesNames.Count == 0)
+                foreach(Compatibility compatibility in autoPart.Compatibilities)
                 {
-                    Compatibility Common = DB.Compatibilities.Where(c => c.Name == "ОБЩЕЕ").FirstOrDefault();
-                    part.Compatibilities.Add(Common);
-                    part.CompatibilitiesNames.Add("ОБЩЕЕ");
+                    if (compatibility.Name == SelectedCompatibilityName)
+                    {
+                        SelectedAutoParts.Add(autoPart);
+                    }
                 }
             }
-            SelectedAutoParts = SelectedAutoParts.Where(s=>s.CompatibilitiesNames.Contains(selectCompatibility.Name)).ToList();
 
+            if (SelectedAutoParts.Count == 0)
+            {
+                return;
+            }
             Population currentPopulation = new Population();
             for (int i = 0; i < PopulationCapacity; i++)
             {
-                int iter = rnd.Next(5,16);
+                int iter = rnd.Next(5, 16);
                 List<int> chromosomes = new List<int>();
                 for (int j = 0; j < iter; j++)
                 {
@@ -114,17 +131,31 @@ namespace DIPLOM.Infrastructure
 
             int populationCount = 0;
 
-            while (populationCount < 100)
+
+
+            //ОСНОВНОЙ ЦИКЛ АЛГОРИТМА
+            while (populationCount < 100 && BestCombination == null)
             {
                 if (worker.CancellationPending)
                 {
                     return;
                 }
-
+                Console.WriteLine("\nПоколение " + populationCount);
                 GetFitFunctionAll(currentPopulation);
+                Console.WriteLine("Фит функции:");
+                for (int i = 0; i < currentPopulation.fitFunctions.Count; i++)
+                {
+                    Console.Write(i+": "+currentPopulation.fitFunctions[i]+"; ");
+                }
                 Individual bestOfPopulation = BestIndividual(currentPopulation);
                 if (bestOfPopulation != null)
                 {
+                    Console.WriteLine();
+                    Console.WriteLine("Лучшая особь:\n");
+                    for (int i =0; i< bestOfPopulation.Chromosome.Count; i++)
+                    {
+                        Console.WriteLine(bestOfPopulation.Chromosome[i] + "; ");
+                    }
                     BestCombination = bestOfPopulation.Chromosome;
                     //return bestOfPopulation.Chromosome;
                 }
@@ -135,12 +166,14 @@ namespace DIPLOM.Infrastructure
                 {
                     List<Individual> parents = currentPopulation.RouletteСoupling();
                     Individual child = parents[0].Crossing(parents[1]);
+                    if (rnd.Next(0, 100) < 15)
+                    {
+                        Mutation(rnd.Next(0, child.Chromosome.Count), child);
+                    }
                     newPopulation.PopulationList.Add(child);
                 }
 
                 currentPopulation = newPopulation;
-
-                Console.WriteLine(populationCount);
 
                 populationCount++;
             }

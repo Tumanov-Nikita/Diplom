@@ -37,49 +37,9 @@
                           MinWidth="50" CanUserResizeRows="False"
                           CanUserAddRows="False">
                     <DataGrid.Columns>
-                        <!--<DataGridTemplateColumn Header="Запчасть" CanUserResize="False" MinWidth="100" MaxWidth="200">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <ComboBox Name="autoPart" DisplayMemberPath="Name"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>-->
-
                         <DataGridTextColumn Header="Группа" Binding="{Binding Group}" Width="*" MinWidth="100" MaxWidth="170" IsReadOnly="True"/>
                         <DataGridCheckBoxColumn Header="Выбрана" Binding="{Binding _isChecked}" Width="60">
-                            <!--<DataGridCheckBoxColumn.CellStyle>
-                                <Style>
-                                    <EventSetter Event="CheckBox.Checked" Handler="OnChecked"/>
-                                </Style>
-                            </DataGridCheckBoxColumn.CellStyle>-->
                         </DataGridCheckBoxColumn>
-
-                        <!--<DataGridCheckBoxColumn.HeaderTemplate>
-                            <DataTemplate>
-                                <CheckBox IsChecked="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}, Path=ViewModel.AllSelected}">Выбрать все</CheckBox>
-                            </DataTemplate>
-                        </DataGridCheckBoxColumn.HeaderTemplate>-->
-
-
-
-                        <!--<DataGridComboBoxColumn Header="Запчасть" 
-                                    DisplayMemberPath="Name" SelectedItemBinding="{Binding AutoPart}" CanUserResize="False" MinWidth="100" MaxWidth="200">
-                                    SelectedValuePath="Id"
-                                    SelectedValueBinding="{Binding Id}"  ItemsSource="{Binding PartItems}"-->
-                                    
-
-                            
-                            <!--<DataGridComboBoxColumn.ElementStyle>
-                                <Style TargetType="{x:Type ComboBox}">
-                                    <Setter Property="ItemsSource" Value="{Binding Path=autoParts, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" />
-                                </Style>
-                            </DataGridComboBoxColumn.ElementStyle>
-                            <DataGridComboBoxColumn.EditingElementStyle>
-                                <Style TargetType="{x:Type ComboBox}">
-                                    <Setter Property="ItemsSource" Value="{Binding Path=autoParts, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" />
-                                </Style>
-                            </DataGridComboBoxColumn.EditingElementStyle>--><!--
-                        </DataGridComboBoxColumn>-->
                     </DataGrid.Columns>
                 </DataGrid>
             </DockPanel>
@@ -95,7 +55,16 @@
             </StackPanel>
             <DockPanel LastChildFill="True" Margin="10,10,10,0" MinWidth="250">
                 <Label x:Name="label_Copy1" DockPanel.Dock="Top" Content="Результат отбора:" Height="29"/>
-                <DataGrid x:Name="dataGridParts" IsReadOnly="True" Margin="0,0,0,10"/>
+                <DataGrid x:Name="dataGridParts" IsReadOnly="True" AutoGenerateColumns="False" Margin="0,0,0,10">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Id" Binding="{Binding Id}" MinWidth="50"/>
+                        <DataGridTextColumn Header="Название" Binding="{Binding Name}" Width="*" MinWidth="100"/>
+                        <DataGridTextColumn Header="Группа" Binding="{Binding GroupName}" MinWidth="100"/>
+                        <DataGridTextColumn Header="Цена" Binding="{Binding Price}" MinWidth="100"/>
+                        <DataGridTextColumn Header="Вес" Binding="{Binding Weight}" MinWidth="100"/>
+                        <DataGridTextColumn Header="Размеры" Binding="{Binding Proportions}" MinWidth="100"/>
+                    </DataGrid.Columns>
+                </DataGrid>
             </DockPanel>
         </DockPanel>
         <ProgressBar x:Name="progressBar" Grid.Column="0" Grid.Row="2" IsIndeterminate="True" Margin="0,10,0,0" Visibility="Hidden"/>

@@ -5,14 +5,23 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DIPLOM.View"
         mc:Ignorable="d"
-        Title="Автозапчасти" Height="387" Width="632"
+        Title="Автозапчасти" Height="387" Width="447"
         Loaded="Window_Loaded">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition Width="0*"/>
         </Grid.ColumnDefinitions>
-        <DataGrid x:Name="dataGridParts" HorizontalAlignment="Left" Height="336" Margin="10,10,0,0" VerticalAlignment="Top" Width="417" RenderTransformOrigin="0.5,0.5"/>
+        <DataGrid x:Name="dataGridParts" AutoGenerateColumns="False" Margin="10" Width="Auto">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Id" Binding="{Binding Id}" MinWidth="50"/>
+                <DataGridTextColumn Header="Название" Binding="{Binding Name}" Width="*" MinWidth="100"/>
+                <DataGridTextColumn Header="Группа" Binding="{Binding GroupName}" MinWidth="100"/>
+                <DataGridTextColumn Header="Цена" Binding="{Binding Price}" MinWidth="100"/>
+                <DataGridTextColumn Header="Вес" Binding="{Binding Weight}" MinWidth="100"/>
+                <DataGridTextColumn Header="Размеры" Binding="{Binding Proportions}" MinWidth="100"/>
+            </DataGrid.Columns>
+        </DataGrid>
 
     </Grid>
 </Window>

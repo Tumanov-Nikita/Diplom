@@ -39,15 +39,27 @@ namespace DIPLOM.Controller
                             {
                                 return;
                             }
-                             compatibilities.Add(new Compatibility(str));
-
+                            //Compatibility findCompatibility = (Compatibility)DB.Compatibilities.Where(c => c.Name == str).FirstOrDefault();
+                            //if (findCompatibility == null)
+                            //{
+                                Compatibility newComp = new Compatibility(str);
+                                DB.Compatibilities.Add(newComp);
+                                compatibilities.Add(newComp);
+                            //}
+                            //else
+                            //{
+                            //    compatibilities.Add(findCompatibility);
+                            //}
+                            DB.SaveChanges();
                         }
                     }
                 }
                 else
                 {
-                    compatibilities.Add(DB.Compatibilities.Where(c => c.Name == "ОБЩЕЕ").FirstOrDefault());
+                    //compatibilities.Add(DB.Compatibilities.Where(c => c.Name == "ОБЩЕЕ").FirstOrDefault());
+                    compatibilities.Add(new Compatibility("ОБЩЕЕ"));
                 }
+
                 AutoPart newRow = new AutoPart(article, name, groupName, subGroupName,
                                                price, proportions, amount, weight);
                 DB.AutoParts.Add(newRow);

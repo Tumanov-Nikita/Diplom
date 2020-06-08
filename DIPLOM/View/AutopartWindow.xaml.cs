@@ -32,10 +32,9 @@ namespace DIPLOM.View
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             DB.AutoParts.Load();
-            dataGridParts.ItemsSource = DB.AutoParts.Local;
-            dataGridParts.Columns[0].Visibility = Visibility.Hidden;
-           //dataGridParts.Columns[2].Visibility = Visibility.Hidden;
-            //dataGridParts.Columns[1].Width = DataGridLength.Auto;
+            dataGridParts.ItemsSource = DB.AutoParts.Local.ToList();
+            //dataGridParts.ItemsSource = 
+
         }
     }
 }

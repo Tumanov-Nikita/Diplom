@@ -22,6 +22,16 @@ namespace DIPLOM.Infrastructure
             return d == null ? false : true;
         }
 
+        public static string UnPointReplace(string text)
+        {
+            char c = '.';
+            if (text.Contains(c.ToString()))
+            {
+                text = text.Replace('.', ',');
+            }
+            return text;
+        }
+
         public static bool PriceValidation(string price)
         {
             if (price == "")
@@ -80,7 +90,7 @@ namespace DIPLOM.Infrastructure
             double resultCapacity = 0;
             foreach(string m in mesaures)
             {
-                resultCapacity += Convert.ToDouble(m);
+                resultCapacity += Convert.ToDouble(UnPointReplace(m));
             }
             return resultCapacity;
         }

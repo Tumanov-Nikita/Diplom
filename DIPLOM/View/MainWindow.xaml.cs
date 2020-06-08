@@ -41,7 +41,7 @@ namespace DIPLOM.View
             
             foreach (Compatibility comp in compatibilities)
             {
-                if (Items.IndexOf(comp) == -1)
+                if (!Items.Where(i=>i.Name == comp.Name).Any())
                 {
                     Items.Add(comp);
                 }
@@ -50,29 +50,12 @@ namespace DIPLOM.View
             ComboBoxCompatibility.ItemsSource = Items;
             ComboBoxCompatibility.SelectedIndex = 0;
 
-            //DataGridTextColumn column = new DataGridTextColumn();
-            //column.Header = "Группа";
-            //column.Binding = new Binding("Group");
-            //column.Width = 100;
-            //RequestedParts.Columns.Add(column);
-
-            //DataGridCheckBoxColumn col = new DataGridCheckBoxColumn();
-            //col.Header = "Выбрана";
-            //col.Binding = new Binding("_isChecked");
-            //column.Width = 100;
-            //RequestedParts.Columns.Add(col);
-
-            //DataGridComboBoxColumn col = new DataGridComboBoxColumn();
-            //col.Header = "Запчасть";
-            //RequestedParts.Columns.Add(col);
-
-
             DB.Groups.Load();
 
             GroupList = new ObservableCollection<GroupView>();
             foreach (Group currGroup in DB.Groups.Local.ToList())
             {
-                GroupList.Add(new GroupView() {  Group = currGroup, _isChecked = false});
+                GroupList.Add(new GroupView() {  Group = currGroup, _isChecked = true});
             }
 
             RequestedParts.ItemsSource = GroupList;
@@ -93,13 +76,31 @@ namespace DIPLOM.View
 
         private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+
             if (e.Error != null)
             {
-                MessageBox.Show(e.Error.Message, "Произошла ошибка");
+                MessageBox.Show(e.Error.Message, "Произошла ошибка подбора");
             }
-            dataGridParts.ItemsSource = (List<int>)e.Result;
+
             progressBar.Visibility = Visibility.Hidden;
             buttonCancel.IsEnabled = false;
+
+            if (e.Result != null)
+            {
+                List<int> ResultIDs = (List<int>)e.Result;
+                List<AutoPart> ResultParts = new List<AutoPart>();
+                foreach (int id in ResultIDs)
+                {
+                    AutoPart part = DB.AutoParts.Where(p => p.Id == id).FirstOrDefault();
+                    ResultParts.Add(part);
+                }
+                dataGridParts.ItemsSource = ResultParts;
+            }
+            else
+            {
+                MessageBox.Show("Не удалось отобрать компоненты для заданных параметров", "Подбор неудачен", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+
         }
 
         private void MenuItemAutoParts_Click(object sender, RoutedEventArgs e)
@@ -108,7 +109,7 @@ namespace DIPLOM.View
             autopartWindow.Show();
         }
 
-        private List<int> StartAlgorithm(BackgroundWorker backgroundWorker, string textPrice, string textWeight, string textCapacity, Compatibility selectedValue, List<Group> selectedGroups)
+        private List<int> StartAlgorithm(BackgroundWorker backgroundWorker, string textPrice, string textWeight, string textCapacity, string selectedValue, List<Group> selectedGroups)
         {
             if (!Checkers.ParametersValidation(textPrice, textWeight, textCapacity))
             {
@@ -123,10 +124,10 @@ namespace DIPLOM.View
                     double price = textPrice == "" ? 0 : Convert.ToDouble(textPrice);
                     double weight = textWeight == "" ? 0 : Convert.ToDouble(textWeight);
                     double capacity = textCapacity == "" ? 0 : Checkers.CapacityCalc(textCapacity);
-                    Compatibility comp = selectedValue;
-                    string compName = comp.Name;
 
-                    GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(DB, 100000, price, weight, capacity, compName, selectedGroups);
+                    double limit = (price + weight + capacity) / 10;
+
+                    GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(DB, limit, price, weight, capacity, selectedValue, selectedGroups);
 
 
                     geneticAlgorithm.FindOptimalCombination(worker);
@@ -156,7 +157,7 @@ namespace DIPLOM.View
                 buttonCancel.IsEnabled = true;
 
 
-                AlgorithmInput input = new AlgorithmInput(textBoxPrice.Text, textBoxWeight.Text, textBoxCapacity.Text, (Compatibility)ComboBoxCompatibility.SelectedValue, selectedGroups);
+                AlgorithmInput input = new AlgorithmInput(textBoxPrice.Text, textBoxWeight.Text, textBoxCapacity.Text, ComboBoxCompatibility.Text, selectedGroups);
                 try
                 {
                     worker.RunWorkerAsync(input);
@@ -183,11 +184,11 @@ namespace DIPLOM.View
 
         public string Capacity { get; set; }
 
-        public Compatibility SelectedValue { get; set; }
+        public string SelectedValue { get; set; }
 
         public List<Group> SelectedGroups { get; set; }
 
-        public AlgorithmInput(string textPrice, string textWeight, string textCapacity, Compatibility selectedCompatibility, List<Group> selectedGroups)
+        public AlgorithmInput(string textPrice, string textWeight, string textCapacity, string selectedCompatibility, List<Group> selectedGroups)
         {
             Price = textPrice;
             Weight = textWeight;
