@@ -5,11 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DIPLOM.View"
         mc:Ignorable="d"
-        Title="Окно администратора" Height="335" Width="372" Loaded="Window_Loaded">
+        Title="Окно администратора" Height="335" Width="372" Loaded="Window_Loaded" ResizeMode="NoResize">
 
     <Grid>
-
-        <Menu DockPanel.Dock="Top" Margin="0,-5,0,5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Menu Grid.Row="0" DockPanel.Dock="Top">
             <MenuItem Header="Справочники">
                 <MenuItem Header="Авто-комплектующие" Click="MenuItemAutoParts_Click"/>
                 <MenuItem Header="Комплектации"/>
@@ -19,10 +22,15 @@
                 <MenuItem Header="Настройки" />
             </MenuItem>
         </Menu>
-
-        <DataGrid x:Name="dataGridUsers" HorizontalAlignment="Left" Height="261" VerticalAlignment="Top" Width="182" IsReadOnly="True" Margin="10,33,0,0"/>
-        <Button x:Name="buttonUpdDB" Content="Обновить базу данных" HorizontalAlignment="Left" Height="28" Margin="208,184,0,0" VerticalAlignment="Top" Width="137" RenderTransformOrigin="0.495,0.536" Click="ButtonUpdDB_Click"/>
-        <Button x:Name="buttonDownloadDB" Content="Выгрузить базу данных" HorizontalAlignment="Left" Height="28" Margin="208,243,0,0" VerticalAlignment="Top" Width="137" RenderTransformOrigin="0.495,0.536" Click="ButtonDownloadDB_Click"/>
-        <Button x:Name="button" Content="Удалить пользователя" HorizontalAlignment="Left" Margin="208,35,0,0" VerticalAlignment="Top" Width="137" Height="30" Click="Button_Click"/>
+        <StackPanel Grid.Row="1" DockPanel.Dock="Left" MinWidth="200" Orientation="Horizontal" Margin="10,10,10,10">
+            <DataGrid x:Name="dataGridUsers" HorizontalAlignment="Left" Height="261" VerticalAlignment="Top" Width="182" />
+            <DockPanel Margin="10,10,10,10">
+                <Button x:Name="button" Content="Удалить пользователя" DockPanel.Dock="Top" Width="137" Height="30" Click="Button_Click"/>
+                <Button x:Name="buttonUpdDB" Content="Обновить базу данных" DockPanel.Dock="Bottom" Height="28"   Width="137" Click="ButtonUpdDB_Click"/>
+                <Button x:Name="buttonDownloadDB" Content="Выгрузить базу данных" DockPanel.Dock="Bottom" Height="28"  Width="137" Click="ButtonDownloadDB_Click"/>
+            </DockPanel>
+            
+        </StackPanel>
+        
     </Grid>
 </Window>

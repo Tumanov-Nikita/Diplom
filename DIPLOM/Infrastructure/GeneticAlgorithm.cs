@@ -42,17 +42,7 @@ namespace DIPLOM.Infrastructure
         {
             population.fitFunctions.Clear();
             List<double> fitFunctionsCalc = new List<double>();
-            //Task<double>[] individualsFunctions = new Task<double>[PopulationCapacity];
-            //for (int i = 0; i < PopulationCapacity; i++)
-            //{
-            //    individualsFunctions[i] = new Task<double>(() => GetFitFunctionOfOne(population.PopulationList[i-1]));
-            //    individualsFunctions[i].Start();
-            //}
-            //Task.WaitAll(individualsFunctions);
-            //foreach(Task<double> t in individualsFunctions)
-            //{
-            //    population.fitFunctions.Add(t.Result);
-            //}
+
             for (int i = 0; i < PopulationCapacity; i++)
             {
                 population.fitFunctions.Add(GetFitFunctionOfOne(population.PopulationList[i]));
@@ -89,7 +79,6 @@ namespace DIPLOM.Infrastructure
 
         public void FindOptimalCombination(BackgroundWorker worker)
         {
-            //Compatibility selectCompatibility = (Compatibility)DB.Compatibilities.Where(c => c.Name == SelectedCompatibilityName).FirstOrDefault();
             List<string> GroupsNames = new List<string>();
             foreach (Group gr in SelectedGroups)
             {
@@ -99,7 +88,6 @@ namespace DIPLOM.Infrastructure
 
             List<AutoPart> TempList = DB.AutoParts.Where(a => GroupsNames.Contains(a.GroupName)).ToList();
 
-            //SelectedAutoParts = TempList.Where(s => s.CompatibilitiesNames.Contains(SelectedCompatibilityName)).ToList();
             SelectedAutoParts = new List<AutoPart>();
 
             foreach (AutoPart autoPart in TempList)
@@ -157,7 +145,6 @@ namespace DIPLOM.Infrastructure
                         Console.WriteLine(bestOfPopulation.Chromosome[i] + "; ");
                     }
                     BestCombination = bestOfPopulation.Chromosome;
-                    //return bestOfPopulation.Chromosome;
                 }
 
                 Population newPopulation = new Population();
@@ -177,9 +164,6 @@ namespace DIPLOM.Infrastructure
 
                 populationCount++;
             }
-
-
-            //return null;
         }
 
 
