@@ -22,50 +22,68 @@ namespace DIPLOM.View
         DB_Context DB;
         BackgroundWorker worker;
         ObservableCollection<GroupView> GroupList;
+        ObservableCollection<AutopartView> PartList;
+        List<AutoPart> ResultParts;
 
         public MainWindow(DB_Context db)
         {
             InitializeComponent();
             DB = db;
 
-            worker = new BackgroundWorker();
-            worker.WorkerReportsProgress = true;
-            worker.WorkerSupportsCancellation = true;
-            worker.DoWork += worker_DoWork;
-            worker.RunWorkerCompleted += worker_RunWorkerCompleted;
-
-            DB.Compatibilities.Load();
-            ObservableCollection<Compatibility> Items = new ObservableCollection<Compatibility>();
-            List<Compatibility> compatibilities = DB.Compatibilities.Local.ToList();
-            compatibilities = compatibilities.Distinct(new CompatibilityComparer()).ToList();
-            
-            foreach (Compatibility comp in compatibilities)
+            try
             {
-                if (!Items.Where(i=>i.Name == comp.Name).Any())
+                worker = new BackgroundWorker();
+                worker.WorkerReportsProgress = true;
+                worker.WorkerSupportsCancellation = true;
+                worker.DoWork += worker_DoWork;
+                worker.RunWorkerCompleted += worker_RunWorkerCompleted;
+
+                DB.Compatibilities.Load();
+                ObservableCollection<Compatibility> Items = new ObservableCollection<Compatibility>();
+                List<Compatibility> compatibilities = DB.Compatibilities.Local.ToList();
+                compatibilities = compatibilities.Distinct(new CompatibilityComparer()).ToList();
+
+                foreach (Compatibility comp in compatibilities)
                 {
-                    Items.Add(comp);
+                    if (!Items.Where(i => i.Name == comp.Name).Any())
+                    {
+                        Items.Add(comp);
+                    }
                 }
+
+                ComboBoxCompatibility.ItemsSource = Items;
+                ComboBoxCompatibility.SelectedIndex = 0;
+
+                DB.Groups.Load();
+
+                GroupList = new ObservableCollection<GroupView>();
+                foreach (Group currGroup in DB.Groups.Local.ToList())
+                {
+                    GroupList.Add(new GroupView() { Group = currGroup, _isChecked = true });
+                }
+                RequestedGroups.ItemsSource = GroupList;
+
+                DB.AutoParts.Load();
+                PartList = new ObservableCollection<AutopartView>();
+
+                foreach (AutoPart currAutoPart in DB.AutoParts.Local.Where(a=>a.Amount>0).ToList())
+                {
+                    PartList.Add(new AutopartView(currAutoPart, false));
+                }
+                RequestedParts.ItemsSource = PartList;
+
             }
-
-            ComboBoxCompatibility.ItemsSource = Items;
-            ComboBoxCompatibility.SelectedIndex = 0;
-
-            DB.Groups.Load();
-
-            GroupList = new ObservableCollection<GroupView>();
-            foreach (Group currGroup in DB.Groups.Local.ToList())
+            catch(Exception ex)
             {
-                GroupList.Add(new GroupView() {  Group = currGroup, _isChecked = true});
+                MessageBox.Show("Не удалось отобрать компоненты для заданных параметров\n"+ex.Message, "Подбор неудачен", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
-
-            RequestedParts.ItemsSource = GroupList;
         }
 
         void worker_DoWork(object sender, DoWorkEventArgs e)
         {
             AlgorithmInput input = (AlgorithmInput)e.Argument;
 
-            e.Result = StartAlgorithm(worker, input.Price, input.Weight, input.Capacity, input.SelectedValue, input.SelectedGroups);
+            e.Result = StartAlgorithm(worker, input.Price, input.Weight, input.Capacity, input.SelectedValue, input.SelectedGroups, input.RequestedParts);
 
             if (worker.CancellationPending == true)
             {
@@ -88,17 +106,18 @@ namespace DIPLOM.View
             if (e.Result != null)
             {
                 List<int> ResultIDs = (List<int>)e.Result;
-                List<AutoPart> ResultParts = new List<AutoPart>();
+                ResultParts = new List<AutoPart>();
                 foreach (int id in ResultIDs)
                 {
                     AutoPart part = DB.AutoParts.Where(p => p.Id == id).FirstOrDefault();
                     ResultParts.Add(part);
                 }
                 dataGridParts.ItemsSource = ResultParts;
+                buttonOK.IsEnabled = true;
             }
             else
             {
-                MessageBox.Show("Не удалось отобрать компоненты для заданных параметров", "Подбор неудачен", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Не удалось отобрать компоненты по заданным данных", "Подбор неудачен", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
 
         }
@@ -109,7 +128,9 @@ namespace DIPLOM.View
             autopartWindow.Show();
         }
 
-        private List<int> StartAlgorithm(BackgroundWorker backgroundWorker, string textPrice, string textWeight, string textCapacity, string selectedValue, List<Group> selectedGroups)
+        private List<int> StartAlgorithm(BackgroundWorker backgroundWorker, string textPrice, 
+            string textWeight, string textCapacity, string selectedValue, 
+            List<Group> selectedGroups, List<AutoPart> requestedParts)
         {
             if (!Checkers.ParametersValidation(textPrice, textWeight, textCapacity))
             {
@@ -125,9 +146,12 @@ namespace DIPLOM.View
                     double weight = textWeight == "" ? 0 : Convert.ToDouble(textWeight);
                     double capacity = textCapacity == "" ? 0 : Checkers.CapacityCalc(textCapacity);
 
-                    double limit = (price + weight + capacity) / 10;
+                    // Настройка допустимого отклонения
+                    double limit = (price + weight + capacity) / 15;
 
-                    GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(DB, limit, price, weight, capacity, selectedValue, selectedGroups);
+                    GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(DB, limit, 
+                        price, weight, capacity, 
+                        selectedValue, selectedGroups, requestedParts);
 
 
                     geneticAlgorithm.FindOptimalCombination(worker);
@@ -144,7 +168,6 @@ namespace DIPLOM.View
             if (Checkers.CheckSelectedGroups(GroupList))
             {
                 List<Group> selectedGroups = new List<Group>();
-
                 foreach (GroupView groupView in GroupList)
                 {
                     if (groupView._isChecked)
@@ -153,11 +176,20 @@ namespace DIPLOM.View
                     }
                 }
 
+                List<AutoPart> selectedAutoParts = new List<AutoPart>();
+                foreach (AutopartView autopartView in PartList)
+                {
+                    if (autopartView._isChecked)
+                    {
+                        selectedAutoParts.Add(autopartView.AutoPart);
+                    }
+                }
+
                 progressBar.Visibility = Visibility.Visible;
                 buttonCancel.IsEnabled = true;
 
 
-                AlgorithmInput input = new AlgorithmInput(textBoxPrice.Text, textBoxWeight.Text, textBoxCapacity.Text, ComboBoxCompatibility.Text, selectedGroups);
+                AlgorithmInput input = new AlgorithmInput(textBoxPrice.Text, textBoxWeight.Text, textBoxCapacity.Text, ComboBoxCompatibility.Text, selectedGroups, selectedAutoParts);
                 try
                 {
                     worker.RunWorkerAsync(input);
@@ -172,6 +204,18 @@ namespace DIPLOM.View
         private void ButtonCancel_Click(object sender, RoutedEventArgs e)
         {
             worker.CancelAsync();
+        }
+
+        private void ButtonOK_Click(object sender, RoutedEventArgs e)
+        {
+            foreach(AutoPart autoPart in ResultParts)
+            {
+                var EditedValue = DB.AutoParts.Where(c => c.Id == autoPart.Id)
+                            .FirstOrDefault();
+                EditedValue.Amount -= 1;
+                DB.SaveChanges();
+            }
+            buttonOK.IsEnabled = false;
         }
     }
 
@@ -188,13 +232,17 @@ namespace DIPLOM.View
 
         public List<Group> SelectedGroups { get; set; }
 
-        public AlgorithmInput(string textPrice, string textWeight, string textCapacity, string selectedCompatibility, List<Group> selectedGroups)
+        public List<AutoPart> RequestedParts { get; set; }
+
+        public AlgorithmInput(string textPrice, string textWeight, string textCapacity, 
+            string selectedCompatibility, List<Group> selectedGroups, List<AutoPart> requestedParts)
         {
             Price = textPrice;
             Weight = textWeight;
             Capacity = textCapacity;
             SelectedValue = selectedCompatibility;
             SelectedGroups = selectedGroups;
+            RequestedParts = requestedParts;
         }
 
     }

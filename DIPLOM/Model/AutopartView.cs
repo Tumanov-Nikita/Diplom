@@ -9,13 +9,13 @@ namespace DIPLOM.Model
 {
     public class AutopartView
     {
-        public Group Group;
-        public ComboBox Combo;
+        public AutoPart AutoPart { get; set; }
+        public bool _isChecked { get; set; }
 
-        public AutopartView(Group group, ComboBox combo)
+        public AutopartView(AutoPart autoPart, bool isSelected)
         {
-            Group = group;
-            Combo = combo;
+            AutoPart = autoPart;
+            _isChecked = isSelected;
         }
     }
 }

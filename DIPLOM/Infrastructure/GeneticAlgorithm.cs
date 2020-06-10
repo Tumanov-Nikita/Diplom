@@ -13,6 +13,7 @@ namespace DIPLOM.Infrastructure
     class GeneticAlgorithm
     {
         private DB_Context DB;
+        List<int> RequestedAutoParts;
         List<AutoPart> SelectedAutoParts;
         List<Group> SelectedGroups;
         public List<int> BestCombination;
@@ -22,11 +23,15 @@ namespace DIPLOM.Infrastructure
         private double PriceP;
         private double WeightP;
         private double CapacityP;
+        private int allowedIndex = 0;
         private static int PopulationCapacity = 10;
+
 
         
 
-        public GeneticAlgorithm(DB_Context db, double fitnessFunctionLimit, double priceP, double weightP, double capacityP, string selectedCompatibility, List<Group> selectedGroups)
+        public GeneticAlgorithm(DB_Context db, double fitnessFunctionLimit, 
+            double priceP, double weightP, double capacityP, 
+            string selectedCompatibility, List<Group> selectedGroups, List<AutoPart> requestedParts)
         {
             DB = db;
             PriceP = priceP;
@@ -35,6 +40,16 @@ namespace DIPLOM.Infrastructure
             SelectedCompatibilityName = selectedCompatibility;
             FitnessFunctionLimit = fitnessFunctionLimit;
             SelectedGroups = selectedGroups;
+            RequestedAutoParts = new List<int>();
+            if (requestedParts != null)
+            {
+                foreach (AutoPart part in requestedParts)
+                {
+                    RequestedAutoParts.Add(part.Id);
+                }
+                allowedIndex = RequestedAutoParts.Count;
+            }
+
         }
 
 
@@ -86,19 +101,24 @@ namespace DIPLOM.Infrastructure
             }
 
 
-            List<AutoPart> TempList = DB.AutoParts.Where(a => GroupsNames.Contains(a.GroupName)).ToList();
+            List<AutoPart> TempList = DB.AutoParts.Where(a => GroupsNames.Contains(a.GroupName) && a.Amount>0).ToList();
 
             SelectedAutoParts = new List<AutoPart>();
-
-            foreach (AutoPart autoPart in TempList)
-            {
-                foreach(Compatibility compatibility in autoPart.Compatibilities)
+            if (SelectedCompatibilityName != "ОБЩЕЕ") {
+                foreach (AutoPart autoPart in TempList)
                 {
-                    if (compatibility.Name == SelectedCompatibilityName)
+                    foreach (Compatibility compatibility in autoPart.Compatibilities)
                     {
-                        SelectedAutoParts.Add(autoPart);
+                        if (compatibility.Name == SelectedCompatibilityName)
+                        {
+                            SelectedAutoParts.Add(autoPart);
+                        }
                     }
                 }
+            }
+            else
+            {
+                SelectedAutoParts = TempList;
             }
 
             if (SelectedAutoParts.Count == 0)
@@ -108,13 +128,20 @@ namespace DIPLOM.Infrastructure
             Population currentPopulation = new Population();
             for (int i = 0; i < PopulationCapacity; i++)
             {
-                int iter = rnd.Next(5, 16);
-                List<int> chromosomes = new List<int>();
+                int iter = 0;
+                iter = rnd.Next(1, 16);
+                Individual newIndividual;
+                newIndividual = null;
+                newIndividual = new Individual(new List<int>());
+                if (RequestedAutoParts != null)
+                {
+                    newIndividual.Chromosome = RequestedAutoParts;
+                }
                 for (int j = 0; j < iter; j++)
                 {
-                    chromosomes.Add(SelectedAutoParts.ElementAt(rnd.Next(0, SelectedAutoParts.Count)).Id);
+                    newIndividual.Chromosome.Add(SelectedAutoParts.ElementAt(rnd.Next(0, SelectedAutoParts.Count)).Id);
                 }
-                currentPopulation.PopulationList.Add(new Individual(chromosomes));
+                currentPopulation.PopulationList.Add(newIndividual);
             }
 
             int populationCount = 0;
@@ -142,7 +169,7 @@ namespace DIPLOM.Infrastructure
                     Console.WriteLine("Лучшая особь:\n");
                     for (int i =0; i< bestOfPopulation.Chromosome.Count; i++)
                     {
-                        Console.WriteLine(bestOfPopulation.Chromosome[i] + "; ");
+                        Console.Write(bestOfPopulation.Chromosome[i] + "; ");
                     }
                     BestCombination = bestOfPopulation.Chromosome;
                 }
@@ -152,10 +179,10 @@ namespace DIPLOM.Infrastructure
                 while (newPopulation.PopulationList.Count < currentPopulation.PopulationList.Count)
                 {
                     List<Individual> parents = currentPopulation.RouletteСoupling();
-                    Individual child = parents[0].Crossing(parents[1]);
+                    Individual child = parents[0].Crossing(parents[1], allowedIndex);
                     if (rnd.Next(0, 100) < 15)
                     {
-                        Mutation(rnd.Next(0, child.Chromosome.Count), child);
+                        Mutation(rnd.Next(allowedIndex, child.Chromosome.Count), child);
                     }
                     newPopulation.PopulationList.Add(child);
                 }
@@ -169,12 +196,15 @@ namespace DIPLOM.Infrastructure
 
         private void Mutation(int index, Individual individual)
         {
-            individual.Chromosome[index] = SelectedAutoParts.ElementAt(rnd.Next(0, SelectedAutoParts.Count)).Id;
+            if (index < individual.Chromosome.Count) {
+                individual.Chromosome[index] = SelectedAutoParts.ElementAt(rnd.Next(0, SelectedAutoParts.Count)).Id;
+            }
         }
 
         private Individual BestIndividual(Population population)
         {
             double bestFit = population.fitFunctions.Min();
+
             if (bestFit < FitnessFunctionLimit)
             {
                 return population.PopulationList[population.fitFunctions.IndexOf(bestFit)];

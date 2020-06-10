@@ -16,15 +16,23 @@ namespace DIPLOM.Model
             Chromosome = chromosome;
         }
 
-        public Individual Crossing(Individual SecondIndividual)
+        public Individual Crossing(Individual SecondIndividual, int startInd)
         {
-            int mid = this.Chromosome.Count / 2;
             List<int> NewChromosome = new List<int>();
-            for (int i = 0; i < mid; i++)
+
+            if (startInd != 0)
+            {
+                for (int i = 0; i < startInd; i++)
+                {
+                    NewChromosome.Add(Chromosome[i]);
+                }
+            }
+            int mid = (this.Chromosome.Count + startInd) / 2;
+            for (int i = startInd; i < mid; i++)
             {
                 NewChromosome.Add(this.Chromosome[i]);
             }
-            for (int i = mid; i < SecondIndividual.Chromosome.Count; i++)
+            for (int i = mid + startInd; i < SecondIndividual.Chromosome.Count; i++)
             {
                 NewChromosome.Add(SecondIndividual.Chromosome[i]);
             }
