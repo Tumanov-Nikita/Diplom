@@ -32,7 +32,7 @@
         <DockPanel Grid.Column="0" Grid.Row="1" LastChildFill="True" Margin="10,10,10,0" MinWidth="250"  Width="Auto">
             <DockPanel DockPanel.Dock="Left" LastChildFill="True" MinWidth="200" Margin="10,10,0,0" >
                 <Label DockPanel.Dock="Top" x:Name="label_Copy" Content="Выберите необходимую совместимость:" Height="29" />
-                <ComboBox DockPanel.Dock="Top" Name="ComboBoxCompatibility" DisplayMemberPath="Name"  MinHeight="25"/>
+                <ComboBox DockPanel.Dock="Top" Name="ComboBoxCompatibility" DisplayMemberPath="Name"  MinHeight="25" SelectionChanged="ComboBoxCompatibility_SelectionChanged"/>
                 <DataGrid x:Name="RequestedGroups" AutoGenerateColumns="False" 
                           DockPanel.Dock="Top" Margin="0,10,0,10"  
                           MinWidth="50" CanUserResizeRows="False"
@@ -64,6 +64,7 @@
                 <Button x:Name="buttonStart" Content="Отобрать компоненты"  Height="25" Margin="0,10,0,0" VerticalAlignment="Top" Click="ButtonStart_Click"/>
                 <Button x:Name="buttonCancel" Content="Отмена" Height="25" Margin="0,10,0,0"  IsEnabled="False" Click="ButtonCancel_Click"/>
                 <Button x:Name="buttonOK" Content="Зафиксировать подбор" Height="25" Margin="0,10,0,0"  IsEnabled="False" Click="ButtonOK_Click"/>
+                <Button x:Name="buttonSaveReport" Content="Сохранить отчет" Height="25" Margin="0,10,0,0"  IsEnabled="False" Click="ButtonSaveReport_Click"/>
 
             </StackPanel>
             <DockPanel LastChildFill="True" Margin="10,10,10,0" MinWidth="250">

@@ -1,5 +1,6 @@
 ﻿using DIPLOM.Infrastructure;
 using DIPLOM.Model;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -114,6 +115,7 @@ namespace DIPLOM.View
                 }
                 dataGridParts.ItemsSource = ResultParts;
                 buttonOK.IsEnabled = true;
+                buttonSaveReport.IsEnabled = true;
             }
             else
             {
@@ -147,7 +149,7 @@ namespace DIPLOM.View
                     double capacity = textCapacity == "" ? 0 : Checkers.CapacityCalc(textCapacity);
 
                     // Настройка допустимого отклонения
-                    double limit = (price + weight + capacity) / 15;
+                    double limit = (price + weight + capacity) / 10;
 
                     GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(DB, limit, 
                         price, weight, capacity, 
@@ -187,9 +189,11 @@ namespace DIPLOM.View
 
                 progressBar.Visibility = Visibility.Visible;
                 buttonCancel.IsEnabled = true;
+                buttonSaveReport.IsEnabled = false;
 
 
-                AlgorithmInput input = new AlgorithmInput(textBoxPrice.Text, textBoxWeight.Text, textBoxCapacity.Text, ComboBoxCompatibility.Text, selectedGroups, selectedAutoParts);
+                AlgorithmInput input = new AlgorithmInput(textBoxPrice.Text, textBoxWeight.Text, textBoxCapacity.Text, 
+                    ComboBoxCompatibility.Text, selectedGroups, selectedAutoParts);
                 try
                 {
                     worker.RunWorkerAsync(input);
@@ -216,6 +220,58 @@ namespace DIPLOM.View
                 DB.SaveChanges();
             }
             buttonOK.IsEnabled = false;
+        }
+
+        private void ButtonSaveReport_Click(object sender, RoutedEventArgs e)
+        {
+            if (ResultParts != null)
+            {
+                SavingReport saving = new SavingReport();
+                string fileName = String.Empty;
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.Filter = "xls files (*.xlsx)|*.xlsx|All files (*.*)|*.*";
+                saveFileDialog.FilterIndex = 1;
+                saveFileDialog.RestoreDirectory = true;
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    fileName = saveFileDialog.FileName;
+                }
+                else
+                    return;
+
+                saving.SaveInExcelReport(ResultParts, fileName);
+            }
+        }
+
+        private void ComboBoxCompatibility_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            PartList = null;
+            PartList = new ObservableCollection<AutopartView>();
+            Compatibility selectedComp = (Compatibility)ComboBoxCompatibility.SelectedItem;
+            if (selectedComp.Name == "ОБЩЕЕ")
+            { 
+                foreach (AutoPart autoPart in DB.AutoParts.Local)
+                {
+                    PartList.Add(new AutopartView(autoPart, false));
+                }
+            }
+            else
+            {
+                //ObservableCollection<AutopartView> CurrentParts = null;
+                //CurrentParts = new ObservableCollection<AutopartView>();
+                foreach (AutoPart autoPart in DB.AutoParts.Local)
+                {
+                    foreach (Compatibility compatibility in autoPart.Compatibilities)
+                    {
+                        if (compatibility.Name == selectedComp.Name)
+                        {
+                            PartList.Add(new AutopartView(autoPart, false));
+                        }
+                    }
+                }
+                //PartList = CurrentParts;
+            }
+            RequestedParts.ItemsSource = PartList;
         }
     }
 

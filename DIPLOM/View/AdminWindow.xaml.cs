@@ -38,33 +38,12 @@ namespace DIPLOM.View
                 case MessageBoxResult.Yes:
                     Parsing parsing = new Parsing(DB);
                     parsing.Parse();
-                    //Thread ParseThread = new Thread(new ThreadStart(parsing.Parse));
-                    //ParseThread.Priority = ThreadPriority.Highest;
-                    //ParseThread.SetApartmentState(ApartmentState.STA);
-                    //ParseThread.Start();
                     break;
                 case MessageBoxResult.No:
                     break;
                 default:
                     break;
             }
-
-            //foreach (Process clsProcess in Process.GetProcesses())
-            //{
-            //    if (clsProcess.MainWindowTitle == "Microsoft Excel")
-            //    {
-            //        clsProcess.Kill();
-            //    }
-            //}
-        }
-
-        private void ButtonDownloadDB_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
 
         }
 

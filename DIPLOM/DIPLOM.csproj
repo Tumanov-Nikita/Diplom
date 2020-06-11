@@ -76,11 +76,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Infrastructure\CloseExcel.cs" />
     <Compile Include="Infrastructure\CompatibilityComparer.cs" />
     <Compile Include="Infrastructure\GeneticAlgorithm.cs" />
     <Compile Include="Controller\GroupController.cs" />
     <Compile Include="Controller\UserController.cs" />
     <Compile Include="Infrastructure\Encrypting.cs" />
+    <Compile Include="Infrastructure\SavingReport.cs" />
     <Compile Include="Migrations\202005241431220_Add compatibilities.cs" />
     <Compile Include="Migrations\202005241431220_Add compatibilities.designer.cs">
       <DependentUpon>202005241431220_Add compatibilities.cs</DependentUpon>

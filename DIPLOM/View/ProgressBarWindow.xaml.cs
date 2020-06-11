@@ -1,4 +1,5 @@
 ﻿using DIPLOM.Controller;
+using DIPLOM.Infrastructure;
 using DIPLOM.Model;
 using Microsoft.Office.Interop.Excel;
 using System;
@@ -152,26 +153,7 @@ namespace DIPLOM.View
             }
 
             int hWnd = ObjExcel.Application.Hwnd;
-            TryKillProcessByMainWindowHwnd(hWnd);
-        }
-
-        [DllImport("user32.dll")]
-        private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
-
-        public static bool TryKillProcessByMainWindowHwnd(int hWnd)
-        {
-            uint processID;
-            GetWindowThreadProcessId((IntPtr)hWnd, out processID);
-            if (processID == 0) return false;
-            try
-            {
-                Process.GetProcessById((int)processID).Kill();
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-            return true;
+            CloseExcel.TryKillProcessByMainWindowHwnd(hWnd);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
